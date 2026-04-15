@@ -2,7 +2,7 @@ name: Compile Pawn
 
 on:
   push:
-    branches: [ Main ]
+    branches: [ main ]
 
 jobs:
   build:
