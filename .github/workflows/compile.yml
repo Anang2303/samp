@@ -12,25 +12,20 @@ jobs:
     - name: Checkout repo
       uses: actions/checkout@v4
 
-    - name: Install tools
+    - name: Install compiler
       run: |
         sudo apt-get update
-        sudo apt-get install -y wget unzip
+        sudo apt-get install -y pawncc || true
 
-    - name: Download working Pawn compiler
+    - name: Check compiler
       run: |
-        wget https://github.com/pawn-lang/compiler/releases/download/v3.10.10/pawnc-linux.tar.gz
-        tar -xvzf pawnc-linux.tar.gz
-
-    - name: Fix permission
-      run: |
-        chmod +x pawncc
+        which pawncc || echo "pawncc not installed"
 
     - name: Compile gamemode
       run: |
-        ./pawncc gamemodes/Main.pwn -o gamemodes/Main.amx
+        pawncc gamemodes/Main.pwn -o gamemodes/Main.amx
 
-    - name: Upload AMX
+    - name: Upload result
       uses: actions/upload-artifact@v4
       with:
         name: gamemode
