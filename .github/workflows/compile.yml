@@ -12,20 +12,23 @@ jobs:
     - name: Checkout repo
       uses: actions/checkout@v4
 
-    - name: Install tools
+    - name: Install dependencies
       run: |
         sudo apt-get update
-        sudo apt-get install -y wget unzip
+        sudo apt-get install -y git make gcc g++
 
-    - name: Download working compiler
+    - name: Clone Pawn compiler
       run: |
-        wget https://github.com/pawn-lang/compiler/releases/download/v3.10.10/pawnc-linux.tar.gz
-        tar -xvzf pawnc-linux.tar.gz
+        git clone https://github.com/compuphase/pawn.git
+
+    - name: Build pawn compiler
+      run: |
+        cd pawn/source/compiler
+        make
 
     - name: Move compiler
       run: |
-        chmod +x pawncc || true
-        sudo mv pawncc /usr/local/bin/
+        sudo cp pawn/source/compiler/pawncc /usr/local/bin/
 
     - name: Compile gamemode
       run: |
