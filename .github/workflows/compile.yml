@@ -12,20 +12,27 @@ jobs:
     - name: Checkout repo
       uses: actions/checkout@v3
 
-    - name: Install compiler
+    - name: Install dependencies
       run: |
         sudo apt-get update
-        sudo apt-get install -y pawncc || true
+        sudo apt-get install -y gcc g++ make
 
-    - name: Download fallback compiler
+    - name: Download Pawn compiler source
       run: |
-        wget https://github.com/Zeex/pawn/releases/download/v3.10.10/pawnc-linux.tar.gz
-        tar -xvzf pawnc-linux.tar.gz
+        git clone https://github.com/compuphase/pawn.git
+
+    - name: Build pawn compiler
+      run: |
+        cd pawn/source/compiler
+        make
+
+    - name: Copy compiler
+      run: |
+        sudo cp pawn/source/compiler/pawncc /usr/local/bin/
 
     - name: Compile gamemode
       run: |
-        chmod +x pawncc || true
-        ./pawncc gamemodes/Main.pwn -o gamemodes/Main.amx
+        pawncc gamemodes/Main.pwn -o gamemodes/Main.amx
 
     - name: Upload AMX
       uses: actions/upload-artifact@v4
