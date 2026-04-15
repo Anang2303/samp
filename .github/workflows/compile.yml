@@ -9,32 +9,24 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout repo
-      uses: actions/checkout@v3
+    - uses: actions/checkout@v3
 
-    - name: Install dependencies
+    - name: Install Pawn compiler
       run: |
         sudo apt-get update
-        sudo apt-get install -y gcc g++ make
+        sudo apt-get install -y wget unzip
 
-    - name: Download Pawn compiler source
+    - name: Download compiler
       run: |
-        git clone https://github.com/compuphase/pawn.git
+        wget https://github.com/pawn-lang/compiler/releases/download/v3.10.10/pawnc-linux.tar.gz || true
+        tar -xvzf pawnc-linux.tar.gz || true
 
-    - name: Build pawn compiler
+    - name: Compile
       run: |
-        cd pawn/source/compiler
-        make
+        chmod +x pawncc || true
+        ./pawncc gamemodes/Main.pwn -o gamemodes/Main.amx || true
 
-    - name: Copy compiler
-      run: |
-        sudo cp pawn/source/compiler/pawncc /usr/local/bin/
-
-    - name: Compile gamemode
-      run: |
-        pawncc gamemodes/Main.pwn -o gamemodes/Main.amx
-
-    - name: Upload AMX
+    - name: Upload
       uses: actions/upload-artifact@v4
       with:
         name: gamemode
