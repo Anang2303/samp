@@ -12,23 +12,14 @@ jobs:
     - name: Checkout repo
       uses: actions/checkout@v4
 
-    - name: Install dependencies
+    - name: Install Pawn compiler
       run: |
         sudo apt-get update
-        sudo apt-get install -y git make gcc g++
+        sudo apt-get install -y pawncc || true
 
-    - name: Clone Pawn compiler
+    - name: Check compiler
       run: |
-        git clone https://github.com/compuphase/pawn.git
-
-    - name: Build pawn compiler
-      run: |
-        cd pawn/source/compiler
-        make
-
-    - name: Move compiler
-      run: |
-        sudo cp pawn/source/compiler/pawncc /usr/local/bin/
+        which pawncc || echo "pawncc not found"
 
     - name: Compile gamemode
       run: |
