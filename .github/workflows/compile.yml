@@ -9,36 +9,36 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout repo
+    - name: Checkout
       uses: actions/checkout@v4
 
     - name: Install tools
       run: |
         sudo apt-get update
-        sudo apt-get install -y git make gcc g++
+        sudo apt-get install -y git build-essential
 
-    - name: Clone Pawn compiler
+    - name: Clone compiler
       run: |
-        git clone https://github.com/compuphase/pawn.git
+        git clone https://github.com/Zeex/pawn.git
 
     - name: Build compiler
       run: |
-        cd pawn/source/compiler
+        cd pawn/source/compiler || exit 1
         make
 
-    - name: Copy compiler
+    - name: Move compiler
       run: |
         sudo cp pawn/source/compiler/pawncc /usr/local/bin/
 
-    - name: Verify compiler
+    - name: Test compiler
       run: |
-        pawncc -v || true
+        pawncc -v
 
     - name: Compile gamemode
       run: |
         pawncc gamemodes/Main.pwn -o gamemodes/Main.amx
 
-    - name: Upload AMX
+    - name: Upload
       uses: actions/upload-artifact@v4
       with:
         name: gamemode
