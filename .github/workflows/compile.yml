@@ -2,7 +2,7 @@ name: Compile Pawn
 
 on:
   push:
-    branches: [ main ]
+    branches: [ Main ]
 
 jobs:
   build:
@@ -12,14 +12,27 @@ jobs:
     - name: Checkout repo
       uses: actions/checkout@v4
 
-    - name: Install Pawn compiler
+    - name: Install tools
       run: |
         sudo apt-get update
-        sudo apt-get install -y pawncc || true
+        sudo apt-get install -y git make gcc g++
 
-    - name: Check compiler
+    - name: Clone Pawn compiler
       run: |
-        which pawncc || echo "pawncc not found"
+        git clone https://github.com/compuphase/pawn.git
+
+    - name: Build compiler
+      run: |
+        cd pawn/source/compiler
+        make
+
+    - name: Copy compiler
+      run: |
+        sudo cp pawn/source/compiler/pawncc /usr/local/bin/
+
+    - name: Verify compiler
+      run: |
+        pawncc -v || true
 
     - name: Compile gamemode
       run: |
